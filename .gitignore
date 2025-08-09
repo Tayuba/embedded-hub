@@ -1,0 +1,11 @@
+build/
+cmake-build-*/
+.vscode/
+.idea/
+*.o *.obj *.elf *.bin *.hex *.map
+*.log
+__pycache__/ *.pyc
+.DS_Store
+.settings/
+**/Debug/
+**/Release/

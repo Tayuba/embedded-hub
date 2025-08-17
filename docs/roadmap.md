@@ -15,7 +15,8 @@ Hardware: NUCLEO F446RE, L552ZE-Q, H7A3ZU-Q, Discovery F407G, TM4C123G, BeagleBo
   - Prime numbers & factorization
   - Logarithms & exponentiation
   - Combinatorics (nCr, nPr)
-- **Bitwise operations** — critical for embedded optimization
+- **Bitwise operations** 
+  - critical for embedded optimization 
 
 ### Embedded Angle:
 - Optimizing C/C++ functions for low-memory MCUs  

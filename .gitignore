@@ -1,27 +1,23 @@
-# Embedded Hub
-# STM32CubeIDE
-build/
-cmake-build-*/
-.idea/
-*.o *.obj *.elf *.bin *.hex *.map
-*.log
-__pycache__/ *.pyc
-.DS_Store
+cat > .gitignore <<'EOF'
+# STM32 build files
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.o
+*.d
+*.lst
+
+# IDE settings
 .settings/
-**/.settings/
-**/Debug/
-**/Release/
-**/*.launch
-**/.project
-**/.cproject
-
-# CCS (TI)
-**/Debug/
-**/Release/
-**/*.launch
-**/.project
-**/.ccsproject
-**/targetConfigs/
-
-# VS Code
+.project
+.cproject
 .vscode/
+*.launch
+
+# OS/system files
+Thumbs.db
+.DS_Store
+EOF

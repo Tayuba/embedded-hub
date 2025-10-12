@@ -1,0 +1,25 @@
+/**
+ ******************************************************************************
+ * @file           : stm32f407xx.h
+ * @brief          : [Add short description of this file]
+ * @author         : Ayuba Tahiru
+ * @date           : Oct 12, 2025
+ * @target_mcu     : STM32F407VHT6
+ * @toolchain      : STM32CubeIDE / GCC ARM Embedded
+ ******************************************************************************
+ * @attention
+ * Copyright (c) 2025 Ayuba Tahiru.
+ * All rights reserved.
+ *
+ * This file is part of the Embedded-Hub project.
+ * Redistribution or modification is permitted for educational use only.
+ ******************************************************************************
+ */
+
+
+#ifndef INC_STM32F407XX_H_
+#define INC_STM32F407XX_H_
+
+
+
+#endif /* INC_STM32F407XX_H_ */

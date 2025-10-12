@@ -21,3 +21,4 @@ Release/
 Thumbs.db
 .DS_Store
 EOF
+.metadata/

@@ -4,7 +4,7 @@
  * @author         : Ayuba Tahiru
  * @date           : Oct 12, 2025
  * @target_mcu     : STM32F407VHT6
- * @toolchain      : STM32CubeIDE / GCC ARM Embedded
+ * @toolchain      : STM32CubeIDE / GCC ARM Embedded.
  ******************************************************************************
  * @attention
  * Copyright (c) 2025 Ayuba Tahiru.

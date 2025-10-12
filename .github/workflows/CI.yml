@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
       - name: Build STM32 Firmware
         run: |
-          make -C stm32_drivers/Debug || echo "No Makefile yet"
+          make -C stm32_drivers/Debug
       - uses: actions/upload-artifact@v4
         with:
           name: stm32_firmware
@@ -35,7 +35,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run Unity Tests
         run: |
-          echo "Placeholder: run Unity tests here"
+          gcc tests/test_gpio_driver.c tests/unity.c stm32_drivers/drivers/Src/gpio_driver.c \
+              -Istm32_drivers/drivers/Inc -o test_gpio
+          ./test_gpio
 
   promote:
     name:  Promote to Release

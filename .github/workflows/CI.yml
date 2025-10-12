@@ -11,28 +11,41 @@ permissions:
 
 jobs:
   build:
-    name:  Build Firmware
+    name: Build Firmware
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Toolchain
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install ARM GCC Toolchain
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
+
       - name: Build STM32 Firmware
+        working-directory: stm32_drivers
         run: |
-          make -C stm32_drivers/Debug
-      - uses: actions/upload-artifact@v4
+          make clean
+          make all
+
+      - name: Upload Firmware Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: stm32_firmware
-          path: stm32_drivers/Debug/*.bin
+          path: |
+            stm32_drivers/Debug/*.bin
+            stm32_drivers/Debug/*.elf
 
   test:
-    name:  Run Logic Tests
+    name: Run Logic Tests
     runs-on: ubuntu-latest
     needs: build
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v3
+
       - name: Run Unity Tests
         run: |
           gcc tests/test_gpio_driver.c tests/unity.c stm32_drivers/drivers/Src/gpio_driver.c \
@@ -40,10 +53,11 @@ jobs:
           ./test_gpio
 
   promote:
-    name:  Promote to Release
+    name: Promote to Release
     runs-on: ubuntu-latest
     needs: [build, test]
     if: ${{ success() && github.ref == 'refs/heads/development' }}
+
     steps:
       - name: Merge development → release
         uses: devmasx/merge-branch@v1.4.0
@@ -51,5 +65,17 @@ jobs:
           type: now
           from_branch: development
           target_branch: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Firmware to Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.ref == 'refs/heads/release' }}
+        with:
+          tag_name: latest-firmware
+          name: STM32 Firmware Release
+          files: |
+            stm32_drivers/Debug/*.bin
+            stm32_drivers/Debug/*.elf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

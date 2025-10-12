@@ -22,3 +22,7 @@ Thumbs.db
 .DS_Store
 EOF
 .metadata/
+# Ignore build output folders, but keep Makefiles
+stm32_drivers/Debug/*
+!stm32_drivers/Debug/Makefile
+

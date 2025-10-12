@@ -18,7 +18,7 @@ jobs:
       - name: Build STM32 Firmware
         run: |
           make -C stm32_drivers/Debug || echo "No Makefile yet"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: stm32_firmware
           path: stm32_drivers/Debug/*.bin

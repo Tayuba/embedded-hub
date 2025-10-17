@@ -15,31 +15,32 @@ permissions:
 
 jobs:
   build:
-    name:  Build STM32 Firmware
+    name:  Build (GNU Make)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Source
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install ARM GCC Toolchain
+      - name: Install ARM GCC
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi make
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
 
-      - name: Build Firmware (CubeIDE)
+      - name: Build
+        working-directory: stm32_drivers
         run: |
-          cd stm32_drivers/Debug
-          make clean || echo "No clean rule found — skipping..."
           make -j4
 
-      - name: Upload Firmware Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: stm32_firmware
-          path: stm32_drivers/Debug/*.elf
-
-
+          name: firmware
+          path: |
+            stm32_drivers/build/*.elf
+            stm32_drivers/build/*.bin
+            stm32_drivers/build/*.hex
+            stm32_drivers/build/*.map
   test:
     name:  Run Unit Tests
     runs-on: ubuntu-latest

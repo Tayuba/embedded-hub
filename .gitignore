@@ -1,28 +1,12 @@
 cat > .gitignore <<'EOF'
-# STM32 build files
-Debug/
-Release/
+# Build outputs
+build/
 *.elf
 *.bin
 *.hex
 *.map
+*.list
 *.o
 *.d
-*.lst
 
-# IDE settings
-.settings/
-.project
-.cproject
-.vscode/
-*.launch
-
-# OS/system files
-Thumbs.db
-.DS_Store
-EOF
-.metadata/
-# Ignore build output folders, but keep Makefiles
-stm32_drivers/Debug/*
-!stm32_drivers/Debug/Makefile
 

@@ -95,18 +95,11 @@ $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
 # Assemble -> obj (with depfile)
-#$(BUILD_DIR)/%.o: %.s
-#	@mkdir -p $(dir $@)
-#	$(AS) $(ASFLAGS) -MMD -MP -c $< -o $@
-# Assemble -> obj (with depfile)
-# Handles both lowercase .s and uppercase .S
-
-
-$(BUILD_DIR)/%.o: %.S
+$(BUILD_DIR)/%.o: %.s
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -MMD -MP -c $< -o $@
 
-$(BUILD_DIR)/%.o: %.S %.s
+$(BUILD_DIR)/%.o: %.S
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -MMD -MP -c $< -o $@
 

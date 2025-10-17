@@ -79,6 +79,11 @@ jobs:
     needs: [build, test]
     if: ${{ github.ref == 'refs/heads/development' }}
     steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
       - name: Merge to Release
         run: |
           echo "Promoting to release branch..."
@@ -88,3 +93,4 @@ jobs:
           git checkout release
           git merge development --no-edit
           git push origin release
+

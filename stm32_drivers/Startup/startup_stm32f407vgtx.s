@@ -38,7 +38,7 @@ Reset_Handler:
 CopyDataInit:
   ldr r4, [r2, r3]
   str r4, [r0, r3]
-  adds r3, r3, #4
+  adds r3, r3,
 
 LoopCopyDataInit:
   adds r4, r0, r3
@@ -48,12 +48,12 @@ LoopCopyDataInit:
 
   ldr r2, =_sbss
   ldr r4, =_ebss
-  movs r3, #0
+  movs r3, 
   b LoopFillZerobss
 
 FillZerobss:
   str  r3, [r2]
-  adds r2, r2, #4
+  adds r2, r2,
 
 LoopFillZerobss:
   cmp r2, r4

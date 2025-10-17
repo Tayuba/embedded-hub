@@ -1,12 +1,22 @@
-cat > .gitignore <<'EOF'
-# Build outputs
+# STM32CubeIDE / Eclipse metadata
+.metadata/
+
+# Build directories
 build/
+Debug/
+Release/
+
+# Temporary logs
+*.log
+*.snap
+
+# Compiled objects
+*.o
 *.elf
 *.bin
 *.hex
 *.map
-*.list
-*.o
-*.d
 
-
+# OS junk
+.DS_Store
+Thumbs.db

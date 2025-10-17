@@ -27,6 +27,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
 
+      #  Step 1: Debug the file to see what GitHub actually receives
+      - name: Debug startup file content
+        run: |
+          echo "---- first 40 bytes (hex) ----"
+          hexdump -C stm32_drivers/Startup/startup_stm32f407vgtx.s | head
+          echo "---- first 10 lines (text) ----"
+          head -10 stm32_drivers/Startup/startup_stm32f407vgtx.s
+
+      #  Step 2: Sanitize the startup file (remove BOM + CRLF if present)
+      - name: Sanitize startup file
+        run: |
+          sed -i '1s/^\xEF\xBB\xBF//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
+          sed -i 's/\r$//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
+          echo "Sanitized startup file."
+          file stm32_drivers/Startup/startup_stm32f407vgtx.s
+
+      #  Step 3: Build the firmware
       - name: Build
         working-directory: stm32_drivers
         run: |
@@ -41,6 +58,7 @@ jobs:
             stm32_drivers/build/*.bin
             stm32_drivers/build/*.hex
             stm32_drivers/build/*.map
+
   test:
     name:  Run Unit Tests
     runs-on: ubuntu-latest

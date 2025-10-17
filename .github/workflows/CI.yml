@@ -27,17 +27,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi make
 
-      - name: Build Firmware
+      - name: Build Firmware (CubeIDE)
         run: |
-          cd stm32_drivers
-          make clean
-          make
+          cd stm32_drivers/Debug
+          make clean || echo "No clean rule found — skipping..."
+          make -j4
 
       - name: Upload Firmware Artifact
         uses: actions/upload-artifact@v4
         with:
           name: stm32_firmware
           path: stm32_drivers/Debug/*.elf
+
 
   test:
     name:  Run Unit Tests

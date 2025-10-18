@@ -1,90 +1,145 @@
-name: STM32 CI/CD Pipeline (Safe Merge)
+name: STM32 Industrial CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - development
+    branches: [development]
   pull_request:
-    branches:
-      - release
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  pull-requests: write
+    branches: [release]
 
 jobs:
-  build:
-    name: Build (GNU Make)
+  static-analysis:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout full history
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
+      - run: sudo apt-get install -y cppcheck
+      - name: Run static analysis
+        run: cppcheck --enable=all --inconclusive --error-exitcode=1 Src drivers
 
-      - name: Install ARM GCC Toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
-
-      - name: Sanitize startup file (optional safety)
-        run: |
-          sed -i '1s/^\xEF\xBB\xBF//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
-          sed -i 's/\r$//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
-          echo "Sanitized startup file."
-
+  build:
+    runs-on: ubuntu-latest
+    needs: static-analysis
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
+        run: sudo apt-get install -y gcc-arm-none-eabi make
       - name: Build firmware
         working-directory: stm32_drivers
+        run: make -j4
+      - name: Generate CRC and signature
         run: |
-          make -j4
-
-      - name: Upload Firmware Artifacts
-        uses: actions/upload-artifact@v4
+          crc32 stm32_drivers/build/firmware.bin > stm32_drivers/build/firmware.crc
+          openssl dgst -sha256 -sign private.pem -out firmware.sig firmware.bin
+      - uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: |
-            stm32_drivers/build/*.elf
-            stm32_drivers/build/*.bin
-            stm32_drivers/build/*.hex
-            stm32_drivers/build/*.map
+          path: stm32_drivers/build/*
 
   test:
-    name: Run Unit Tests (Mock)
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-      - name: Run mock tests
-        run: |
-          echo "Running mock unit tests..."
-          sleep 2
-          echo " All tests passed"
+      - uses: actions/checkout@v3
+      - name: Run unit tests
+        run: make test
 
   promote:
-    name: Promote to Release (Safe Merge)
     runs-on: ubuntu-latest
     needs: [build, test]
-    if: ${{ github.ref == 'refs/heads/development' }}
-
     steps:
-      - name: Checkout full repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        run: |
+      - uses: actions/checkout@v3
+      - run: |
           git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
-      - name: Merge development → release safely
-        run: |
-          echo "Fetching all branches..."
-          git fetch origin
-          git checkout release || git checkout -b release origin/release
-          echo "Merging changes from development..."
-          git merge origin/development --no-edit || true
+          git merge development --no-edit
           git push origin release
+
+
+# name: STM32 CI/CD Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - development
+#   pull_request:
+#     branches:
+#       - release
+#   workflow_dispatch:
+
+# permissions:
+#   contents: write
+#   pull-requests: write
+
+# jobs:
+#   build:
+#     name: Build (GNU Make)
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout full history
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+
+#       - name: Install ARM GCC Toolchain
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi make
+
+#       - name: Sanitize startup file
+#         run: |
+#           sed -i '1s/^\xEF\xBB\xBF//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
+#           sed -i 's/\r$//' stm32_drivers/Startup/startup_stm32f407vgtx.s || true
+#           echo "Sanitized startup file."
+
+#       - name: Build firmware
+#         working-directory: stm32_drivers
+#         run: |
+#           make -j4
+
+#       - name: Upload Firmware Artifacts
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: firmware
+#           path: |
+#             stm32_drivers/build/*.elf
+#             stm32_drivers/build/*.bin
+#             stm32_drivers/build/*.hex
+#             stm32_drivers/build/*.map
+
+#   test:
+#     name: Run Unit Tests (Mock)
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#       - name: Checkout source
+#         uses: actions/checkout@v3
+#       - name: Run mock tests
+#         run: |
+#           echo "Running mock unit tests..."
+#           sleep 2
+#           echo " All tests passed"
+
+#   promote:
+#     name: Promote to Release
+#     runs-on: ubuntu-latest
+#     needs: [build, test]
+#     if: ${{ github.ref == 'refs/heads/development' }}
+
+#     steps:
+#       - name: Checkout full repo
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+
+#       - name: Configure Git
+#         run: |
+#           git config --global user.name "github-actions"
+#           git config --global user.email "actions@github.com"
+
+#       - name: Merge development → release safely
+#         run: |
+#           echo "Fetching all branches..."
+#           git fetch origin
+#           git checkout release || git checkout -b release origin/release
+#           echo "Merging changes from development..."
+#           git merge origin/development --no-edit || true
+#           git push origin release

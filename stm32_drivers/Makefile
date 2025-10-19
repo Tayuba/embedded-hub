@@ -52,17 +52,40 @@ ASFLAGS := $(MCU) $(DBG) -x assembler-with-cpp $(addprefix -I,$(INC_DIRS))
 
 LDFLAGS := $(MCU) -T$(LINKER_SCRIPT) -Wl,--gc-sections -Wl,-Map,$(BUILD_DIR)/$(PROJECT).map
 
-# =========================
-# Source / object discovery
-# =========================
-C_SOURCES := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))
-S_SOURCES := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.s) $(wildcard $(d)/*.S))
 
+# =========================
+# 👇👇 Restrict source files to *only the ones you want to build*
+# =========================
+# Instead of wildcards, list sources manually.
+# Comment out or add files as needed.
+
+#C_SOURCES := \
+#  Src/main.c \
+#  Src/syscalls.c \
+#  Src/sysmem.c \
+#  drivers/Src/stm32f407_GPIO_Driver.c \
+#  drivers/Src/stm32f407_SPI_Driver.c
+
+ If you want to build 3_IT_BTN_LED.c instead of main.c:
+ C_SOURCES := \
+   Src/3_IT_BTN_LED.c \
+   Src/syscalls.c \
+   Src/sysmem.c \
+   drivers/Src/stm32f407_GPIO_Driver.c \
+   drivers/Src/stm32f407_SPI_Driver.c
+
+S_SOURCES := Startup/startup_stm32f407vgtx.s
+
+
+# =========================
+# Object generation
+# =========================
 OBJECTS := \
   $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SOURCES)) \
   $(patsubst %.s,$(BUILD_DIR)/%.o,$(S_SOURCES))
 
 DEPS := $(OBJECTS:.o=.d)
+
 
 # =========================
 # Top-level targets
@@ -100,12 +123,10 @@ size: $(BUILD_DIR)/$(PROJECT).elf
 # =========================
 # Compilation rules
 # =========================
-# Compile C source -> object
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-# Assemble .s / .S source -> object
 $(BUILD_DIR)/%.o: %.s
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -MMD -MP -c $< -o $@

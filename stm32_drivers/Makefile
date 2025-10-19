@@ -54,19 +54,9 @@ LDFLAGS := $(MCU) -T$(LINKER_SCRIPT) -Wl,--gc-sections -Wl,-Map,$(BUILD_DIR)/$(P
 
 
 # =========================
-# 👇👇 Restrict source files to *only the ones you want to build*
+# Select the main to build*
 # =========================
-# Instead of wildcards, list sources manually.
-# Comment out or add files as needed.
 
-#C_SOURCES := \
-#  Src/main.c \
-#  Src/syscalls.c \
-#  Src/sysmem.c \
-#  drivers/Src/stm32f407_GPIO_Driver.c \
-#  drivers/Src/stm32f407_SPI_Driver.c
-
- If you want to build 3_IT_BTN_LED.c instead of main.c:
  C_SOURCES := \
    Src/3_IT_BTN_LED.c \
    Src/syscalls.c \

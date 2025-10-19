@@ -47,7 +47,7 @@ int main(void)
 	// Button Configuration
 	GPIO_BTN.pGPIOx = GPIOA;
 	GPIO_BTN.pGPIO_PinConfig.GPIO_PinNumber 		= GPIO_PIN_NO_0;
-	GPIO_BTN.pGPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_INP_FE_T;
+	GPIO_BTN.pGPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_INP_RE_T;
 	GPIO_BTN.pGPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_H;
 	GPIO_BTN.pGPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPD_PULUP;
 

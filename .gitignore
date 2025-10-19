@@ -2,9 +2,9 @@
 .metadata/
 
 # Build directories
-build/
 Debug/
 Release/
+build/
 
 # Temporary logs
 *.log

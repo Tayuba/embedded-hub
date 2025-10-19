@@ -1,0 +1,144 @@
+/**
+ ******************************************************************************
+ * @file           : stm32f407_GPIO_Driver.h
+ * @author         : Ayuba Tahiru
+ * @date           : Oct 18, 2025
+ * @target_mcu     : STM32F407VHT6
+ * @toolchain      : STM32CubeIDE / GCC ARM Embedded
+ ******************************************************************************
+ * @attention
+ * Copyright (c) 2025 Ayuba Tahiru
+ * All rights reserved.
+ *
+ * This file is part of the Embedded-Hub project.
+ * Redistribution or modification is permitted for educational use only.
+ ******************************************************************************
+ */
+
+#ifndef INC_STM32F407_GPIO_DRIVER_H_
+#define INC_STM32F407_GPIO_DRIVER_H_
+
+
+
+#include "stm32f407xx.h"
+
+/*
+ * GPIO pin configurable
+ * */
+typedef struct{
+	uint8_t GPIO_PinNumber;							// Possible values from @GPIO_PIN_NUMBERS
+	uint8_t GPIO_PinMode;							// Possible values from @GPIO_PIN_MODES
+	uint8_t GPIO_PinSpeed;							// Possible values from @GPIO_PIN_SPEED
+	uint8_t GPIO_PinPuPdControl;					// Possible values from @GPIO_PIN_PULL_UP_PULL_DOWN
+	uint8_t GPIO_PinOPType;							// Possible values from @GPIO_PIN_OUTPUT_TYPE
+	uint8_t GPIO_PinAlteFuncMode;
+}GPIO_PinConfig;
+/*
+ * GPIOx Handle Structure*
+ */
+typedef struct {
+	GPIO_Reg_t 			*pGPIOx;   						// Holds base address of GPIO port to which the pin belongs
+	GPIO_PinConfig		pGPIO_PinConfig;				// Holds GPIO pin configuration settings
+}GPIO_Handle_t;
+
+/*************************************************************************************************************************
+ * 													APIs Support Driver
+ * ***********************************************************************************************************************/
+
+// Peripheral Clock setup
+void GPIO_PeriphControl(GPIO_Reg_t *pGPIOx, uint8_t EnrDis);
+
+// Initialize and De-Initialize
+void GPIO_Init(GPIO_Handle_t *pGPIOHandle);
+void GPIO_DeInit(GPIO_Reg_t *pGPIOx);
+
+// Read and Write Data
+uint8_t GPIO_ReadInputPin(GPIO_Reg_t *pGPIOx, uint8_t PinNum);
+uint16_t GPIO_ReadInputPort(GPIO_Reg_t *pGPIOx);
+void GPIO_WriteOutputPin(GPIO_Reg_t *pGPIOx, uint8_t PinNum, uint8_t Val);
+void GPIO_WriteOutputPort(GPIO_Reg_t *pGPIOx, uint8_t Val);
+void GPIO_ToggleOutputPin(GPIO_Reg_t *pGPIOx, uint8_t PinNum);
+
+// Interrupt Configuration and Interrupt Service Routine Handling
+void GPIO_InterruptConfig(uint8_t IRQNum, uint8_t EnrDis);
+void GPIO_IRQHandler(uint8_t PinNum);
+void GPIO_InterruptPriorityConfig(uint8_t IRQNum ,uint32_t IRQ_Priority);
+
+/*
+ *@GPIO_PIN_MODES
+ * */
+//GPIO Pin Mode Macros
+#define GPIO_MODE_INPUT					0
+#define GPIO_MODE_OUTPUT				1
+#define GPIO_MODE_ALTFUNC				2
+#define GPIO_MODE_ANALOG				3
+#define GPIO_MODE_INP_FE_T				4
+#define GPIO_MODE_INP_RE_T				5
+#define GPIO_MODE_INP_FERE_T			6
+
+/*
+ *@GPIO_PIN_OUTPUT_TYPE
+ * */
+//GPIO Output Types Macros
+#define GPIO_OTY_PUSPUL					0
+#define GPIO_OTY_OPEN_DRAIN				1
+
+/*
+ *@GPIO_PIN_SPEED
+ * */
+//GPIO Output Speed Macros
+#define GPIO_OSPEED_L					0
+#define GPIO_OSPEED_M					1
+#define GPIO_OSPEED_H					2
+#define GPIO_OSPEED_VH					3
+
+/*
+ *@GPIO_PIN_PULL_UP_PULL_DOWN
+ * */
+//GPIO Pull Up, Pull Down Macros
+#define GPIO_PUPD_NO					0
+#define GPIO_PUPD_PULUP					1
+#define GPIO_PUPD_PULDOWN				2
+
+/*
+ *@GPIO_PIN_NUMBERS
+ * */
+//GPIO Pull Up, Pull Down Macros
+#define GPIO_PIN_NO_0					0
+#define GPIO_PIN_NO_1					1
+#define GPIO_PIN_NO_2					2
+#define GPIO_PIN_NO_3					3
+#define GPIO_PIN_NO_4					4
+#define GPIO_PIN_NO_5					5
+#define GPIO_PIN_NO_6					6
+#define GPIO_PIN_NO_7					7
+#define GPIO_PIN_NO_8					8
+#define GPIO_PIN_NO_9					9
+#define GPIO_PIN_NO_10					10
+#define GPIO_PIN_NO_11					11
+#define GPIO_PIN_NO_12					12
+#define GPIO_PIN_NO_13					13
+#define GPIO_PIN_NO_14					14
+#define GPIO_PIN_NO_15					15
+
+
+//NVIC Priority Macros
+#define NVIC_IRQ_PRIORITY_0				0
+#define NVIC_IRQ_PRIORITY_1				1
+#define NVIC_IRQ_PRIORITY_2				2
+#define NVIC_IRQ_PRIORITY_3				3
+#define NVIC_IRQ_PRIORITY_4				4
+#define NVIC_IRQ_PRIORITY_5				5
+#define NVIC_IRQ_PRIORITY_6				6
+#define NVIC_IRQ_PRIORITY_7				7
+#define NVIC_IRQ_PRIORITY_8				8
+#define NVIC_IRQ_PRIORITY_9				9
+#define NVIC_IRQ_PRIORITY_10			10
+#define NVIC_IRQ_PRIORITY_11			11
+#define NVIC_IRQ_PRIORITY_12			12
+#define NVIC_IRQ_PRIORITY_13			13
+#define GNVIC_IRQ_PRIORITY_14			14
+#define NVIC_IRQ_PRIORITY_15			15
+
+
+#endif /* INC_STM32F407_GPIO_DRIVER_H_ */

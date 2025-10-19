@@ -59,6 +59,7 @@ int main(void)
 
 	GPIO_InterruptPriorityConfig(IRQ_EXTI0, NVIC_IRQ_PRIORITY_15);
 	GPIO_InterruptConfig(IRQ_EXTI0, ENABLE);
+
 //	GPIO_InterruptPriorityConfig(IRQ_EXTI9_5, NVIC_IRQ_PRIORITY_15);
 //	GPIO_InterruptConfig(IRQ_EXTI9_5, ENABLE);
 

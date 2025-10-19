@@ -37,18 +37,18 @@ jobs:
 
       - name: Build firmware
         working-directory: stm32_drivers
-        run: |
-          make -j4
+        run: make -j4
 
       - name: Upload Firmware Artifacts
+        working-directory: stm32_drivers
         uses: actions/upload-artifact@v4
         with:
           name: firmware
           path: |
-            stm32_drivers/build/*.elf
-            stm32_drivers/build/*.bin
-            stm32_drivers/build/*.hex
-            stm32_drivers/build/*.map
+            build/*.elf
+            build/*.bin
+            build/*.hex
+            build/*.map
 
   test:
     name: Run Unit Tests (Mock)
